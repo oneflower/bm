@@ -1,11 +1,21 @@
 CFLAGS=-Wall -Wextra -Wswitch-enum -std=c11 -pedantic
 LIBS=
 
+.PHONY: all
 all: bm bmi
 
-bm: bm.c bm.h
-	$(CC) $(CFLAGS) -o bm bm.c $(LIBS)
+bm: ./src/bm.c ./src/bm.h
+	$(CC) $(CFLAGS) -o bm ./src/bm.c $(LIBS)
 
-bmi: bmi.c bm.h
-	$(CC) $(CFLAGS) -o bmi bmi.c $(LIBS)
+bmi: ./src/bmi.c ./src/bm.h
+	$(CC) $(CFLAGS) -o bmi ./src/bmi.c $(LIBS)
 
+.PHONY: examples
+examples: ./examples/fib.bm ./examples/123.bm
+
+
+./examples/fib.bm: bm ./examples/fib.ebasm
+	./bm ./examples/fib.ebasm ./examples/fib.bm
+
+./examples/123.bm: bm ./examples/123.ebasm
+	./bm ./examples/123.ebasm ./examples/123.bm
