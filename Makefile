@@ -10,6 +10,9 @@ bm: ./src/bm.c ./src/bm.h
 bmi: ./src/bmi.c ./src/bm.h
 	$(CC) $(CFLAGS) -o bmi ./src/bmi.c $(LIBS)
 
+bme: ./src/bme.c ./src/bm.h
+	$(CC) $(CFLAGS) -o bme ./src/bme.c $(LIBS)
+
 .PHONY: examples
 examples: ./examples/fib.bm ./examples/123.bm
 

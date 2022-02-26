@@ -24,6 +24,8 @@ typedef enum {
   ERR_DIV_BY_ZERO,
 } Err;
 
+const char *err_as_cstr(Err err);
+
 const char *err_as_cstr(Err err)
 {
   switch (err) {
@@ -80,6 +82,8 @@ typedef struct {
   int halt;
 } Bm;
 
+const char *inst_type_as_cstr(Inst_Type type);
+
 const char *inst_type_as_cstr(Inst_Type type)
 {
   switch (type) {
@@ -111,6 +115,13 @@ const char *inst_type_as_cstr(Inst_Type type)
 #define MAKE_INST_EQ		{.type = INST_EQ}
 #define MAKE_INST_HALT		{.type = INST_HALT}
 #define MAKE_INST_PRINT_DEBUG	{.type = INST_PRINT_DEBUG}
+
+Err bm_execute_inst(Bm *bm);
+Err bm_execute_program(Bm *bm, int limit);
+void bm_dump_stack(FILE *stream, const Bm *bm);
+void bm_load_program_from_memory(Bm *bm, Inst *program, size_t program_size);
+void bm_load_program_from_file(Bm *bm, const char *file_path);
+void bm_save_program_to_file(const Bm *bm, const char *file_path);
 
 Err bm_execute_inst(Bm *bm)
 {
@@ -235,6 +246,22 @@ Err bm_execute_inst(Bm *bm)
   }
   
   return ERR_OK;
+}
+
+Err bm_execute_program(Bm *bm, int limit)
+{
+    while (limit != 0 && !bm->halt) {
+        Err err = bm_execute_inst(bm);
+        if (err != ERR_OK) {
+            return err;
+        }
+
+        if (limit > 0) {
+            --limit;
+        }
+    }
+
+    return ERR_OK;
 }
 
 void bm_dump_stack(FILE *stream, const Bm *bm)
@@ -522,4 +549,4 @@ String_View slurp_file(const char *file_path)
       };
 }
 
-#endif // BM_IMPLAEMENTATION
+#endif // BM_IMPLEMENTATION
